@@ -1,65 +1,108 @@
-/*
-** client.c for soft war in /home/wurfl_v/Soft War/Client
-** 
-** Made by WURFL Valentin
-** Login   <wurfl_v@etna-alternance.net>
-** 
-** Started on  Wed Jul  6 09:55:31 2016 WURFL Valentin
-** Last update Sat Jul 29 15:37:29 2017 WURFL Valentin
-*/
-
 #include "client.h"
 #include <stdio.h>
+#include <string.h>
+
+pthread_cond_t condition = PTHREAD_COND_INITIALIZER; /* Création de la condition */
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; /* Création du mutex */
 
 void	do_client(t_data *data)
 {
-  char	*buffer;
-  int	quit;
+  char    str[512];
+  int   rread;
 
-  quit = 1;
-  buffer = malloc(sizeof(char *) * 251);
-  get_next_line(data->socket);
-  /* write(data->socket, "Jean-Pierre", my_strlen("Jean-Pierre")); */
-  while (quit == 1)
+  while (42)
+  {
+    if ((rread = recv(data->socket, str, 510, 0)) < 0)
     {
-      if (my_read(0, buffer, 251) <= 0)
-	  quit = 0;
-      else if (my_strlen(buffer) <= 250)
-	{
-	  if (my_strncmp(buffer, "/bye\n", 5) == 0)
-	      quit = 0;
-	  else
-	    {
-	      write(data->socket, buffer, my_strlen(buffer));
-	      get_next_line(data->socket);
-	    }
-	}
-      my_memset(buffer, 0, 251);
+      perror("recv()");
+      exit(errno);
     }
-  free(buffer);
-  free(data);
+    str[rread] = '\0';
+
+    if (strlen(str) <= 250)
+    {
+      puts(str);
+      data->game = strdup(str);
+      check_cmd(str, data);
+      memset(str, 0, 512);
+    }
+  }
 }
 
-void	my_client(t_data *data)
+void      *display(void *arg)
+{
+  t_data      *data;
+  t_display   *display;
+
+  data = malloc(sizeof(t_data));
+  display = malloc(sizeof(t_display));
+  if (data == NULL || display == NULL)
+  {
+    fprintf(stderr, "Erreur\n");
+    exit (1);
+  }
+  // pthread_mutex_lock(&mutex);
+  // pthread_cond_wait(&condition, &mutex);
+  // pthread_mutex_unlock(&mutex);
+  data = (t_data *)arg;
+
+  if (init_sdl(display) == 1)
+    return (NULL);
+  else
+    sdl_start(display, data);
+  pthread_exit(NULL);
+  return (NULL);
+}
+
+void	*my_client(void *arg)
 {
   int	connect;
+  
+  t_data    *data;
+  data = malloc(sizeof(t_data));
+  if (data == NULL)
+  {
+    fprintf(stderr, "Erreur d'allocation pour data\n");
+    exit (1);
+  }
+  data = (t_data *)arg;
 
-  data->port = my_getnbr(data->argv[5]);
-  printf("Port = %d\n", atoi(data->argv[5]));
+  data->type = 1;
+
+  data->port = atoi(data->argv[5]);
+
   data->pe = getprotobyname("TCP");
   data->socket = my_socket(AF_INET, SOCK_STREAM, data->pe->p_proto);
   if (data->socket == -1)
-    return ;
+    return (NULL);
   data->sin.sin_family = AF_INET;
   data->sin.sin_addr.s_addr = inet_addr(data->argv[3]);
   data->sin.sin_port = htons(data->port);
   connect = my_connect(data->socket, (const struct sockaddr *)&data->sin, sizeof(data->sin));
   if (connect != -1)
-    {
-      do_client(data);
-      close(data->socket);
-    }
+  {
+    do_client(data);
+    close(data->socket);
+  }
   else
     free(data);
-  return ;
+  pthread_exit(NULL);
+  exit(-1);
+  return (NULL);
 }
+
+int     client(t_data *data)
+{
+  pthread_t   print;
+  pthread_t   client;
+
+  pthread_create(&client, NULL, &my_client, data);
+  pthread_create(&print, NULL, display, data);
+  pthread_join(client, NULL);
+  pthread_join(print, NULL);
+  return (0);
+}
+
+
+
+

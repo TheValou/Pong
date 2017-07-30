@@ -32,13 +32,18 @@ void    check_client(char *buffer, t_data *data)
 }
 
 
-void    connect_client(t_server *server)
+void    connect_client(t_server *server, t_data *data)
 {
  struct sockaddr_in csin;
  size_t size;
  int     cs;
  char    str[512];
  int   rread;
+
+ char send[512];
+
+ char scoreP1_s[10];
+ char scoreP2_s[10];
 
  size = sizeof(csin);
  cs = accept(server->fd_socket, (struct sockaddr *)&csin, (socklen_t *)&size);
@@ -62,55 +67,68 @@ void    connect_client(t_server *server)
       //MOuvement de la balle
 
 
-/* Mise a jour du score */
-      sprintf(scoreP1_s,"%d",scoreP1);
-      sprintf(scoreP2_s,"%d",scoreP2);
-  
-      score1 = TTF_RenderText_Solid(font, scoreP1_s, couleurScore);
-      score2 = TTF_RenderText_Solid(font, scoreP2_s, couleurScore);
+    /* Mise a jour du score */
+      sprintf(scoreP1_s,"%d",data->scorep1);
+      sprintf(scoreP2_s,"%d",data->scorep2);
+
+      strcat(send, "SCORE ");
+      strcat(send, scoreP1_s);
+      strcat(send, scoreP2_s);
+
+      printf("à envoyer = %s\n", send);
+
+
+      // A METTRE DANS DISPLAY
+      // display->score1 = TTF_RenderText_Solid(font, scoreP1_s, couleurScore);
+      // display->score2 = TTF_RenderText_Solid(font, scoreP2_s, couleurScore);
+            // A METTRE DANS DISPLAY
+
       
-      
-      /* Rebond sur les bords de l'ecran */
-      if(posBall.y <=0)
-  yBall = BALL_SPEED;
-      if(posBall.y >=SCREEN_H)
-  yBall = -BALL_SPEED;
-        
+      /* Rebond sur les bords de l'ecran VITESSSSE*/ 
+      // if(display->positionBall.y <=0)
+      //   display->yBall = BALL_SPEED;
+      // if(display->positionBall.y >=SCREEN_H)
+      //   display->yBall = -BALL_SPEED;
+      if(data->ball_y <=0)
+        data->yBall = BALL_SPEED; //va vers le bas
+      if(data->ball_y >=SCREEN_H)
+        data->yBall = -BALL_SPEED; //va ver sle haut
+
       
       
       /* Si victoire d'un joueur */
-      if(posBall.x <=0)
-  {
-    resetBall(&posBall,&xBall,&yBall);
-    scoreP2++;
-  }
-      if(posBall.x + BALL_SIZE >SCREEN_W)
-  {
-    resetBall(&posBall,&xBall,&yBall);
-    scoreP1++;
-  }
+      if(data->ball_x <=0)
+      {
+        //resetBall(&display->positionBall,&data->xBall,&data->yBall);
+        data->scorep2++;
+      }
+      if(data->ball_x + BALL_SIZE >SCREEN_W)
+      {
+        //resetBall(&display->positionBall,&data->xBall,&data->yBall);
+        data->scorep1++;
+      }
       
       
       
       
       /* Collision avec la barre de gauche */
       
-      if(posBall.x <= posBar1.x+BAR_W &&  posBall.x > posBar1.x)
-  {
-      
-    if(posBall.y >= posBar1.y && posBall.y <= posBar1.y + BAR_H)
-      xBall = BALL_SPEED;
-      
-  }
+      if(data->ball_x <= data->xplayer+BAR_W && data->ball_x > data->xplayer)
+      {
+
+        if(data->ball_y >= data->yplayer && data->ball_y <= data->yplayer + BAR_H)
+          data->xBall = BALL_SPEED;
+
+      }
       
       /* Collision avec la barre de droite */
-      if(posBall.x >= posBar2.x &&  posBall.x < posBar2.x + BAR_W/2)
-  {
-      
-    if(posBall.y >= posBar2.y && posBall.y <= posBar2.y + BAR_H)
-      xBall = -BALL_SPEED;
-      
-  }
+      if(data->ball_x >= data->xplayertwo &&  data->ball_x < data->xplayertwo + BAR_W/2)
+      {
+
+        if(data->ball_y >= data->yplayertwo && data->ball_y <= data->yplayertwo + BAR_H)
+          data->xBall = -BALL_SPEED;
+
+      }
 
 
       //write ver sle client le tableau avec toutes les infos
@@ -136,25 +154,75 @@ int   init_connection(t_server *server, int port)
   return (-1);
 }
 
-int     server(t_data *data)
+// void      *display(void *arg)
+// {
+//   t_data      *data;
+//   t_display   *display;
+
+//   data = malloc(sizeof(t_data));
+//   display = malloc(sizeof(t_display));
+//   if (data == NULL || display == NULL)
+//   {
+//     fprintf(stderr, "Erreur\n");
+//     exit (1);
+//   }
+//   // pthread_mutex_lock(&mutex);
+//   // pthread_cond_wait(&condition, &mutex);
+//   // pthread_mutex_unlock(&mutex);
+//   data = (t_data *)arg;
+
+//   if (init_sdl(display) == 1)
+//     return (NULL);
+//   else
+//     sdl_start(display, data);
+//   pthread_exit(NULL);
+//   return (NULL);
+// }
+
+void     *my_server(void *arg)
 {
   t_server    *server;
   int     port;
+  t_data    *data;
+  data = malloc(sizeof(t_data));
+  if (data == NULL)
+  {
+    fprintf(stderr, "Erreur d'allocation pour data\n");
+    exit (1);
+  }
+  data = (t_data *)arg;
+
+  data->type = 2;
 
   server = malloc(sizeof(t_server));
   if (server == NULL)
-    return (-1);
-  init_ressources();
-  port = my_getnbr(argv[3]);
+    return (NULL);
+  port = atoi(data->argv[3]);
   if (init_connection(server, port) != -1)
   {
     if( (my_bind(server->fd_socket, (const struct sockaddr *)&server->sin, sizeof(server->sin)) != -1))
     {
      my_listen(server->fd_socket, 4);
-     connect_client(server);
+     connect_client(server, data);
      close(server->fd_socket);
-     return (1);
+     return (NULL);
    }
  }
- return (-1);
+ return (NULL);
 }
+
+int     server(t_data *data)
+{
+  pthread_t   print;
+  pthread_t   server;
+
+  pthread_create(&server, NULL, &my_server, data);
+  pthread_create(&print, NULL, display, data);
+
+  pthread_join(server, NULL);
+  pthread_join(print, NULL);
+  return (0);
+}
+
+
+

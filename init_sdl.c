@@ -134,13 +134,40 @@ void  wait_event(t_display *display, t_data *data) //ATTENDRE LES ÉVENEMENTS, f
   SDL_Delay(20);
 }
 
+void  wait_event_serve(t_display *display, t_data *data) //ATTENDRE LES ÉVENEMENTS, fonction bone, à tester
+{
+  SDL_PollEvent(&display->event);
+  if (display->event.type == SDL_QUIT)
+  {
+    SDL_Quit();
+    exit(0);
+  }
+  if (display->event.type == SDL_KEYDOWN && display->event.key.keysym.sym == SDLK_ESCAPE)
+  {
+    SDL_Quit();
+    exit(0);
+  }
+  if (display->event.type == SDL_KEYDOWN && display->event.key.keysym.sym == SDLK_UP)
+    dprintf(data->socket, "UP 1\n");
+  if (display->event.type == SDL_KEYUP && display->event.key.keysym.sym == SDLK_UP)
+    dprintf(data->socket, "UP 0\n");
+  if (display->event.type == SDL_KEYDOWN && display->event.key.keysym.sym == SDLK_DOWN)
+    dprintf(data->socket, "DOWN 1\n");
+  if (display->event.type == SDL_KEYUP && display->event.key.keysym.sym == SDLK_DOWN)
+    dprintf(data->socket, "DOWN 0\n");
+  SDL_Delay(20);
+}
+
 int   sdl_start(t_display *display, t_data *data) //Lancer le jeu
 {
   int   continuer = 1;
 
   while (continuer)
   {
-    wait_event(display, data);
+    if (data->type == 1)
+      wait_event(display, data);
+    if (data->type == 2)
+      wait_event_serve(display, data);
       draw_game(display, data); //affichage des joueurs et de la balle
     }
     SDL_FreeSurface(display->rectangle);
