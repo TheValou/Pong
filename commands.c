@@ -1,6 +1,5 @@
 #include "client.h"
 
-
 void		check_cmd(char *buffer, t_data *data)
 {
   char		**play;
@@ -18,6 +17,7 @@ void		check_cmd(char *buffer, t_data *data)
      my_ball(play[i], data);
    i++;
  }
+ free(play);
 }
 
 void    my_players(char *buffer, t_data * data)
@@ -25,16 +25,13 @@ void    my_players(char *buffer, t_data * data)
   char    **tab;
 
   tab = my_str_to_wordtab(buffer, ' ');
-  if (atoi(tab[1]) == data->id)
-  {
-    data->xplayer = atof(tab[1]) * 15;
-    data->yplayer = (data->height - atof(tab[2]) - 1) * 15;
-  }
-  else if (atoi(tab[1]) != data->id)
-  {
-    data->xplayertwo = atof(tab[3]) * 15;
-    data->yplayertwo = (data->height - atof(tab[4]) - 1) * 15;
-  }
+  data->xplayer = atoi(tab[1]);
+  data->yplayer = atoi(tab[2]);
+
+  data->xplayertwo = atoi(tab[3]);
+  data->yplayertwo = atoi(tab[4]);
+
+  free(tab);
 }
 
 void    my_scores(char *buffer, t_data * data)
@@ -44,6 +41,7 @@ void    my_scores(char *buffer, t_data * data)
   tab = my_str_to_wordtab(buffer, ' ');
   data->scorep1 = atoi(tab[1]);
   data->scorep2 = atoi(tab[2]);
+  free(tab);
 }
 
 void    my_ball(char *buffer, t_data *data)
@@ -53,5 +51,6 @@ void    my_ball(char *buffer, t_data *data)
   tab = my_str_to_wordtab(buffer, ' ');
   data->ball_x = atoi(tab[1]);
   data->ball_y = atoi(tab[2]);
+  free(tab);
 }
 

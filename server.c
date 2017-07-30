@@ -15,20 +15,22 @@ void    check_client(char *buffer, t_data *data)
   char    **play;
   int   i;
 
+(void)data;
   i = 0;
   play = my_str_to_wordtab(buffer, '\n');
   while (play[i] != NULL)
   {
     if (strncmp(play[i], "UP 1", 5) == 0)
-     my_scores(play[i], data);
-   else if (strncmp(play[i], "UP 0", 7) == 0)
-     my_players(play[i], data);
-   else if (strncmp(play[i], "DOWN 0", 4) == 0)
-     my_ball(play[i], data);
-   else if (strncmp(play[i], "DOWN 1", 4) == 0)
-     my_ball(play[i], data);
-   i++;
- }
+      printf("le joueur adverse envoie UP");
+    else if (strncmp(play[i], "UP 0", 7) == 0)
+      printf("le joueur adverse envoie UP NOPE");
+    else if (strncmp(play[i], "DOWN 0", 4) == 0)
+      printf("le joueur adverse envoie DOWN");
+    else if (strncmp(play[i], "DOWN 1", 4) == 0)
+      printf("le joueur adverse envoie DOWN");
+    i++;
+  }
+  free(play);
 }
 
 
@@ -51,7 +53,7 @@ void    connect_client(t_server *server, t_data *data)
  {
    while (42)
    {
-    if ((rread = recv(data->socket, str, 510, 0)) < 0)
+    if ((rread = recv(cs, str, 510, 0)) < 0)
     {
       perror("recv()");
       exit(errno);
@@ -133,6 +135,7 @@ void    connect_client(t_server *server, t_data *data)
 
       //write ver sle client le tableau avec toutes les infos
       memset(str, 0, 512);
+      memset(send, 0, 512);
     }
   }
 }
@@ -153,31 +156,6 @@ int   init_connection(t_server *server, int port)
   }
   return (-1);
 }
-
-// void      *display(void *arg)
-// {
-//   t_data      *data;
-//   t_display   *display;
-
-//   data = malloc(sizeof(t_data));
-//   display = malloc(sizeof(t_display));
-//   if (data == NULL || display == NULL)
-//   {
-//     fprintf(stderr, "Erreur\n");
-//     exit (1);
-//   }
-//   // pthread_mutex_lock(&mutex);
-//   // pthread_cond_wait(&condition, &mutex);
-//   // pthread_mutex_unlock(&mutex);
-//   data = (t_data *)arg;
-
-//   if (init_sdl(display) == 1)
-//     return (NULL);
-//   else
-//     sdl_start(display, data);
-//   pthread_exit(NULL);
-//   return (NULL);
-// }
 
 void     *my_server(void *arg)
 {
@@ -200,7 +178,7 @@ void     *my_server(void *arg)
   port = atoi(data->argv[3]);
   if (init_connection(server, port) != -1)
   {
-    if( (my_bind(server->fd_socket, (const struct sockaddr *)&server->sin, sizeof(server->sin)) != -1))
+    if((my_bind(server->fd_socket, (const struct sockaddr *)&server->sin, sizeof(server->sin)) != -1))
     {
      my_listen(server->fd_socket, 4);
      connect_client(server, data);

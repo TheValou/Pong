@@ -91,23 +91,17 @@ void    print_ball(t_data *data, t_display *display) //Pour aficcher la ball de 
 
 void    print_players(t_data *data, t_display *display) //Pour aficche rles joueurs de PONG, À MODIFIER!!
 {
-  SDL_Rect  position;
 
-  position.x = data->xplayer;
-  if (data->yplayer <= 1)
-    position.y = (data->height - 1) * 15;
-  else
-    position.y = data->yplayer;
-  SDL_FillRect(display->rectangle, NULL, SDL_MapRGB(display->ecran->format, 240, 5, 0));
-  SDL_BlitSurface(display->rectangle, NULL, display->ecran, &position);
+  display->positionP1.x = data->xplayer;
+  display->positionP1.y = data->yplayer;
+  SDL_FillRect(display->player1, NULL, SDL_MapRGB(display->ecran->format, 240, 5, 0));
+  SDL_BlitSurface(display->player1, NULL, display->ecran, &display->positionP1);
   
-  position.x = data->xplayertwo;
-  if (data->yplayertwo <= 1)
-    position.y = (data->height - 1) * 15;
-  else
-    position.y = data->yplayertwo;
-  SDL_FillRect(display->rectangle, NULL, SDL_MapRGB(display->ecran->format, 5, 245, 0));
-  SDL_BlitSurface(display->rectangle, NULL, display->ecran, &position);
+  display->positionP2.x = data->xplayertwo;
+  display->positionP2.y = data->yplayertwo;
+  SDL_FillRect(display->player2, NULL, SDL_MapRGB(display->ecran->format, 240, 5, 0));
+  SDL_BlitSurface(display->player2, NULL, display->ecran, &display->positionP2);
+  
 }
 
 void  wait_event(t_display *display, t_data *data) //ATTENDRE LES ÉVENEMENTS, fonction bone, à tester
@@ -185,8 +179,14 @@ int   sdl_start(t_display *display, t_data *data) //Lancer le jeu
     SDL_BlitSurface(display->player1,NULL,display->ecran,&display->positionP1);
     SDL_BlitSurface(display->player2,NULL,display->ecran,&display->positionP2);
     
+    display->score1 = TTF_RenderText_Solid(display->font, "123", display->couleur);
+    display->score2 = TTF_RenderText_Solid(display->font, "ZE2", display->couleur);
+
     SDL_BlitSurface(display->score1,NULL,display->ecran,&display->positionScore1);
     SDL_BlitSurface(display->score2,NULL,display->ecran,&display->positionScore2);
+
+
+
     (void)data;
 
     // print_players(data, display);

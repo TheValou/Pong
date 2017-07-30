@@ -112,7 +112,7 @@ typedef struct		s_server
   int			fd_max;
   int			fd_socket;
   fd_set		readf;
-  int			actual;
+  int			fd_op;
 }			t_server;
 
 
