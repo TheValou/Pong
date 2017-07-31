@@ -1,9 +1,9 @@
 /*
 ** client.h for soft war in /home/wurfl_v/Soft War/Client
-** 
+**
 ** Made by WURFL Valentin
 ** Login   <wurfl_v@etna-alternance.net>
-** 
+**
 ** Started on  Wed Jul  6 09:57:37 2016 WURFL Valentin
 ** Last update Sat Jul 29 16:56:34 2017 WURFL Valentin
 */
@@ -57,11 +57,11 @@ typedef struct		s_data
 	int					id;
 	int					scorep1;
 	int					scorep2;
-	int 				ball_x; //position
-	int 				ball_y; //posotion
+	int 				ball_x; /*position*/
+	int 				ball_y; /*posotion*/
 
-   int xBall;//vitesse
-    int yBall;//viteesse
+   int xBall;/*vitesse*/
+    int yBall;/*viteesse*/
 
 	int				xplayer;
 	int				yplayer;
@@ -73,11 +73,11 @@ typedef struct		s_data
 
 typedef	struct	s_display
 {
-	SDL_Surface	*ecran; 
+	SDL_Surface	*ecran;
 	SDL_Surface	*ball;
-    SDL_Surface	*rectangle;//*bar = NULL,
-    SDL_Surface	*player2;//*bar = NULL,
-    SDL_Surface	*player1;//*bar = NULL,
+    SDL_Surface	*rectangle;/* bar = NULL, */
+    SDL_Surface	*player2;/* bar = NULL, */
+    SDL_Surface	*player1;/* bar = NULL, */
     SDL_Surface *ligne;
 
     Uint8 		*keystates;
@@ -85,13 +85,13 @@ typedef	struct	s_display
     SDL_Rect		positionP1;
     SDL_Rect		positionP2;
     SDL_Rect		positionBall;
-    SDL_Rect		positionLigne; //FIXE
-    SDL_Rect		positionScore1; //FIXE
-    SDL_Rect		positionScore2; //FIXE
+    SDL_Rect		positionLigne; /*FIXE*/
+    SDL_Rect		positionScore1; /*FIXE*/
+    SDL_Rect		positionScore2; /*FIXE*/
     SDL_Event		event;
 
-    int xBall;//vitesse
-    int yBall;//viteesse
+    int xBall;/*vitesse*/
+    int yBall;/*viteesse*/
 
     TTF_Font *font;
     SDL_Color couleur;
@@ -168,7 +168,7 @@ void    my_ball(char *buffer, t_data *data);
 void resetBall(SDL_Rect *position,int *x,int *y);
 char	**my_str_to_wordtab(char *str, char sp);
 void resetBall(SDL_Rect *position,int *x,int *y);
-int   sdl_start(t_display *display, t_data *data); //Lancer le jeu
+int   sdl_start(t_display *display, t_data *data); /*Lancer le jeu*/
 int			server(t_data *data);
 
 #endif /* !CLIENT_H_*/

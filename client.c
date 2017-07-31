@@ -41,9 +41,9 @@ void      *display(void *arg)
     fprintf(stderr, "Erreur\n");
     exit (1);
   }
-  // pthread_mutex_lock(&mutex);
-  // pthread_cond_wait(&condition, &mutex);
-  // pthread_mutex_unlock(&mutex);
+  /* pthread_mutex_lock(&mutex); */
+  /* pthread_cond_wait(&condition, &mutex); */
+  /* pthread_mutex_unlock(&mutex); */
   data = (t_data *)arg;
 
   if (init_sdl(display) == 1)
@@ -57,7 +57,7 @@ void      *display(void *arg)
 void	*my_client(void *arg)
 {
   int	connect;
-  
+
   t_data    *data;
   data = malloc(sizeof(t_data));
   if (data == NULL)
@@ -102,7 +102,3 @@ int     client(t_data *data)
   pthread_join(print, NULL);
   return (0);
 }
-
-
-
-

@@ -1,9 +1,9 @@
 /*
 ** server.c for soft war in /home/wurfl_v/Soft War/Serveur
-** 
+**
 ** Made by WURFL Valentin
 ** Login   <wurfl_v@etna-alternance.net>
-** 
+**
 ** Started on  Wed Jul  6 09:59:13 2016 WURFL Valentin
 ** Last update Sat Jul 29 15:55:30 2017 WURFL Valentin
 */
@@ -66,7 +66,7 @@ void    connect_client(t_server *server, t_data *data)
       data->game = strdup(str);
       check_client(str, data);
 
-      //MOuvement de la balle
+      /* MOuvement de la balle */
 
 
     /* Mise a jour du score */
@@ -80,41 +80,41 @@ void    connect_client(t_server *server, t_data *data)
       printf("à envoyer = %s\n", send);
 
 
-      // A METTRE DANS DISPLAY
-      // display->score1 = TTF_RenderText_Solid(font, scoreP1_s, couleurScore);
-      // display->score2 = TTF_RenderText_Solid(font, scoreP2_s, couleurScore);
-            // A METTRE DANS DISPLAY
+      /*  A METTRE DANS DISPLAY */
+      /*  display->score1 = TTF_RenderText_Solid(font, scoreP1_s, couleurScore); */
+      /*  display->score2 = TTF_RenderText_Solid(font, scoreP2_s, couleurScore); */
+            /*  A METTRE DANS DISPLAY */
 
-      
-      /* Rebond sur les bords de l'ecran VITESSSSE*/ 
-      // if(display->positionBall.y <=0)
-      //   display->yBall = BALL_SPEED;
-      // if(display->positionBall.y >=SCREEN_H)
-      //   display->yBall = -BALL_SPEED;
+
+      /* Rebond sur les bords de l'ecran VITESSSSE*/
+      /*  if(display->positionBall.y <=0) */
+      /*    display->yBall = BALL_SPEED; */
+      /*  if(display->positionBall.y >=SCREEN_H) */
+      /*    display->yBall = -BALL_SPEED; */
       if(data->ball_y <=0)
-        data->yBall = BALL_SPEED; //va vers le bas
+        data->yBall = BALL_SPEED; /* va vers le bas */
       if(data->ball_y >=SCREEN_H)
-        data->yBall = -BALL_SPEED; //va ver sle haut
+        data->yBall = -BALL_SPEED; /* va ver sle haut */
 
-      
-      
+
+
       /* Si victoire d'un joueur */
       if(data->ball_x <=0)
       {
-        //resetBall(&display->positionBall,&data->xBall,&data->yBall);
+        /* resetBall(&display->positionBall,&data->xBall,&data->yBall); */
         data->scorep2++;
       }
       if(data->ball_x + BALL_SIZE >SCREEN_W)
       {
-        //resetBall(&display->positionBall,&data->xBall,&data->yBall);
+        /* resetBall(&display->positionBall,&data->xBall,&data->yBall); */
         data->scorep1++;
       }
-      
-      
-      
-      
+
+
+
+
       /* Collision avec la barre de gauche */
-      
+
       if(data->ball_x <= data->xplayer+BAR_W && data->ball_x > data->xplayer)
       {
 
@@ -122,7 +122,7 @@ void    connect_client(t_server *server, t_data *data)
           data->xBall = BALL_SPEED;
 
       }
-      
+
       /* Collision avec la barre de droite */
       if(data->ball_x >= data->xplayertwo &&  data->ball_x < data->xplayertwo + BAR_W/2)
       {
@@ -133,7 +133,7 @@ void    connect_client(t_server *server, t_data *data)
       }
 
 
-      //write ver sle client le tableau avec toutes les infos
+      /* write ver sle client le tableau avec toutes les infos */
       memset(str, 0, 512);
       memset(send, 0, 512);
     }
