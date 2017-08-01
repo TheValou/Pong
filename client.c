@@ -21,10 +21,15 @@ void	do_client(t_data *data)
 
     if (strlen(str) <= 250)
     {
+            puts("avant le puts");
+
       puts(str);
-      data->game = strdup(str);
+      puts("avant le game");
+      data->game = str;
+      puts("après le game");
       check_cmd(str, data);
       memset(str, 0, 512);
+      //free(data->game);
     }
   }
 }
@@ -68,7 +73,6 @@ void	*my_client(void *arg)
   data = (t_data *)arg;
 
   data->type = 1;
-
   data->port = atoi(data->argv[5]);
 
   data->pe = getprotobyname("TCP");

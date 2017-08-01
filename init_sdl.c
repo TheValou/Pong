@@ -42,7 +42,7 @@ int	init_sdl(t_display *display) //FONCTION BONNE
   SDL_FillRect(display->player2,NULL,SDL_MapRGB(display->player2->format,255,255,255));
 
   display->ball = SDL_CreateRGBSurface(SDL_HWSURFACE,BALL_SIZE,BALL_SIZE,32,0,0,0,0);
-  SDL_FillRect(display->ball,NULL,SDL_MapRGB(display->ball->format,255,255,255)); //ON DESSINE LA BALL, OKAY
+  SDL_FillRect(display->ball,NULL,SDL_MapRGB(display->ball->format,255,0,0)); //ON DESSINE LA BALL, OKAY
 
 
   TTF_Init();
@@ -172,6 +172,18 @@ int   sdl_start(t_display *display, t_data *data) //Lancer le jeu
   void    draw_game(t_display *display, t_data *data) //pour afficher le jeu, à modifier
   {
 
+    char scoreP1_s[10];
+    char scoreP2_s[10];
+
+    sprintf(scoreP1_s,"%d",data->scorep1);
+    sprintf(scoreP2_s,"%d",data->scorep2);
+    puts ("ALors la : ");
+    puts(scoreP2_s);
+    display->score1 = TTF_RenderText_Solid(display->font, scoreP1_s, display->couleur);
+    display->score2 = TTF_RenderText_Solid(display->font, scoreP2_s, display->couleur);
+
+
+
  /* Affichage des surfaces */
     SDL_FillRect(display->ecran,NULL,SDL_MapRGB(display->ecran->format,0,0,0));
     SDL_BlitSurface(display->ligne,NULL,display->ecran,&display->positionLigne);
@@ -179,8 +191,7 @@ int   sdl_start(t_display *display, t_data *data) //Lancer le jeu
     SDL_BlitSurface(display->player1,NULL,display->ecran,&display->positionP1);
     SDL_BlitSurface(display->player2,NULL,display->ecran,&display->positionP2);
     
-    display->score1 = TTF_RenderText_Solid(display->font, "123", display->couleur);
-    display->score2 = TTF_RenderText_Solid(display->font, "ZE2", display->couleur);
+    SDL_BlitSurface(display->ball,NULL,display->ecran,&display->positionBall);
 
     SDL_BlitSurface(display->score1,NULL,display->ecran,&display->positionScore1);
     SDL_BlitSurface(display->score2,NULL,display->ecran,&display->positionScore2);
@@ -190,8 +201,8 @@ int   sdl_start(t_display *display, t_data *data) //Lancer le jeu
     (void)data;
 
     // print_players(data, display);
-    //print_ball(data, display);
-    // print_score(data, display);
+    print_ball(data, display);
+    //print_score(data, display);
     
     SDL_Flip(display->ecran);
     SDL_Delay(10);

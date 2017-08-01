@@ -15,19 +15,19 @@ void    check_client(char *buffer, t_data *data)
   char    **play;
   int   i;
 
-(void)data;
+  (void)data;
   i = 0;
   play = my_str_to_wordtab(buffer, '\n');
   while (play[i] != NULL)
   {
     if (strncmp(play[i], "UP 1", 5) == 0)
-      printf("le joueur adverse envoie UP");
+      puts("le joueur adverse envoie UP");
     else if (strncmp(play[i], "UP 0", 7) == 0)
-      printf("le joueur adverse envoie UP NOPE");
+      puts("le joueur adverse envoie UP NOPE");
     else if (strncmp(play[i], "DOWN 0", 4) == 0)
-      printf("le joueur adverse envoie DOWN");
+      puts("le joueur adverse envoie DOWN");
     else if (strncmp(play[i], "DOWN 1", 4) == 0)
-      printf("le joueur adverse envoie DOWN");
+      puts("le joueur adverse envoie DOWN");
     i++;
   }
   free(play);
@@ -42,10 +42,13 @@ void    connect_client(t_server *server, t_data *data)
  char    str[512];
  int   rread;
 
- char send[512];
+ char sendc[512];
 
  char scoreP1_s[10];
  char scoreP2_s[10];
+
+ char Ball_x_s[10];
+ char Ball_y_s[10];
 
  size = sizeof(csin);
  cs = accept(server->fd_socket, (struct sockaddr *)&csin, (socklen_t *)&size);
@@ -63,6 +66,8 @@ void    connect_client(t_server *server, t_data *data)
     if (strlen(str) <= 250)
     {
       puts(str);
+      memset(sendc, 0, 512);
+
       data->game = strdup(str);
       check_client(str, data);
 
@@ -73,18 +78,15 @@ void    connect_client(t_server *server, t_data *data)
       sprintf(scoreP1_s,"%d",data->scorep1);
       sprintf(scoreP2_s,"%d",data->scorep2);
 
-      strcat(send, "SCORE ");
-      strcat(send, scoreP1_s);
-      strcat(send, scoreP2_s);
+      strcat(sendc, "SCORE ");
+      strcat(sendc, scoreP1_s);
+      strcat(sendc, " ");
+      strcat(sendc, scoreP2_s);
 
-      printf("à envoyer = %s\n", send);
+      // printf("à envoyer = %s\n", sendc);
 
 
-      // A METTRE DANS DISPLAY
-      // display->score1 = TTF_RenderText_Solid(font, scoreP1_s, couleurScore);
-      // display->score2 = TTF_RenderText_Solid(font, scoreP2_s, couleurScore);
-            // A METTRE DANS DISPLAY
-
+      
       
       /* Rebond sur les bords de l'ecran VITESSSSE*/ 
       // if(display->positionBall.y <=0)
@@ -132,10 +134,31 @@ void    connect_client(t_server *server, t_data *data)
 
       }
 
+      data->xBall += data->ball_x;
+      data->yBall += data->ball_y;
+      data->yBall++;
+
+      sprintf(Ball_x_s,"%d",data->xBall);
+      sprintf(Ball_y_s,"%d",data->yBall);
+
+      strcat(sendc, "\nBALL ");
+      //strcat(sendc, Ball_x_s);
+      strcat(sendc, "2");
+      strcat(sendc, " ");
+      //strcat(sendc, "9");
+      strcat(sendc, Ball_y_s);
+
+      printf("à envoyer = %s\n", sendc);
+
+      if(send(cs, sendc, strlen(sendc), 0) < 0)
+      {
+        perror("send()");
+        exit(errno);
+      }
 
       //write ver sle client le tableau avec toutes les infos
       memset(str, 0, 512);
-      memset(send, 0, 512);
+      memset(sendc, 0, 512);
     }
   }
 }
