@@ -48,42 +48,40 @@ typedef struct		s_data
 {
 	struct sockaddr_in	sin;
 	struct protoent		*pe;
-	int 				type;
+	int 				type; //client ou serveur
 	int					port;
 	int					socket;
-	char 				*game;
-	int					height;
-	int					width;
-	int					id;
-	int					scorep1;
-	int					scorep2;
-	int 				ball_x; //position
-	int 				ball_y; //posotion
+	char 				*game; //contient le message
+	int					height; //hauteur de la fenêtre
+	int					width; //largeur de la fenêtre
+	int					scorep1; //score du joeur 1 en int
+	int					scorep2; //score du joeur 2 en int
+	int 				ball_x; //position x de la ball
+	int 				ball_y; //position y de la ball
+  int xBall; //vitesse
+  int yBall; //vitesse
 
-   int xBall;//vitesse
-    int yBall;//viteesse
+  int				xplayer; //position x du joueur 1
+  int				yplayer; //position y du joueur 1
+  int				xplayertwo; //position x de joueur 2
+  int				yplayertwo; //position y de joueur 2
 
-	int				xplayer;
-	int				yplayer;
-	int				xplayertwo;
-	int				yplayertwo;
-
-	char			**argv;
+  char			**argv;
 }			t_data;
 
 typedef	struct	s_display
 {
-	SDL_Surface	*ecran; 
-	SDL_Surface	*ball;
-    SDL_Surface	*rectangle;//*bar = NULL,
+ SDL_Surface	*ecran; 
+ SDL_Surface	*ball;
+  SDL_Surface	*rectangle;//*bar = NULL,
     SDL_Surface	*player2;//*bar = NULL,
     SDL_Surface	*player1;//*bar = NULL,
     SDL_Surface *ligne;
 
     Uint8 		*keystates;
 
-    SDL_Rect		positionP1;
-    SDL_Rect		positionP2;
+    SDL_Rect		positionP1; //Position du player 1
+    SDL_Rect		positionP2; //position du player2
     SDL_Rect		positionBall;
     SDL_Rect		positionLigne; //FIXE
     SDL_Rect		positionScore1; //FIXE
@@ -100,74 +98,74 @@ typedef	struct	s_display
 
     int		width;
     int		height;
-}		t_display;
+  }		t_display;
 
 
 /* PARTIE SERVEUR */
 
-typedef struct		s_server
-{
-  struct protoent	*pe;
-  struct sockaddr_in	sin;
-  int			fd_max;
-  int			fd_socket;
-  fd_set		readf;
-  int			fd_op;
-}			t_server;
+  typedef struct		s_server
+  {
+    struct protoent	*pe;
+    struct sockaddr_in	sin;
+    int			fd_max;
+    int			fd_socket;
+    fd_set		readf;
+    int			fd_op;
+  }			t_server;
 
 
-int	my_socket(int domain, int type, int protocol);
-void	launch_game(t_server *server);
-int	my_bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
-int	my_listen(int sockfd, int backlog);
-int	my_accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
-int	my_getnbr(char *str);
-void   	my_memset(char *str, int c, size_t n);
-char	*my_strcpy(char *dest, char *src);
-char	*my_strdup(char *str);
-void	my_putchar(char c);
-void	my_putstr(char *str);
-int	my_strlen(char *str);
-int	my_strcmp(char *s1, char *s2);
-int	my_strncmp(char *s1, char *s2, int n);
-void    init_ressources();
-void    connect_client(t_server *server, t_data *data);
-int	init_connection(t_server *server, int port);
-char	*my_strcat(char *str1, char *str2);
-char	*my_char_nbr(int nb);
-int     server(t_data *data);
+  int	my_socket(int domain, int type, int protocol);
+  void	launch_game(t_server *server);
+  int	my_bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+  int	my_listen(int sockfd, int backlog);
+  int	my_accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+  int	my_getnbr(char *str);
+  void   	my_memset(char *str, int c, size_t n);
+  char	*my_strcpy(char *dest, char *src);
+  char	*my_strdup(char *str);
+  void	my_putchar(char c);
+  void	my_putstr(char *str);
+  int	my_strlen(char *str);
+  int	my_strcmp(char *s1, char *s2);
+  int	my_strncmp(char *s1, char *s2, int n);
+  void    init_ressources();
+  void    connect_client(t_server *server, t_data *data);
+  int	init_connection(t_server *server, int port);
+  char	*my_strcat(char *str1, char *str2);
+  char	*my_char_nbr(int nb);
+  int     server(t_data *data);
 
-void      *display(void *arg);
+  void      *display(void *arg);
 /* PARTIE SERVEUR */
 
 
 
-int		main(int argc, char **argv);
-int		init_sdl(t_display *display);
-void	usage();
-void	*my_client(void *arg);
-int		client(t_data *data);
-void	do_client(t_data *data);
-int		my_socket(int domain, int type, int protocol);
-int		my_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
-int		my_read(int fd, void *buffer, size_t count);
-int		check_arg(int argc, char **argv);
-void	my_putchar(char c);
-void	my_putstr(char *str);
-int		my_strlen(char *str);
-int		my_strcmp(char *s1, char *s2);
-int		my_strncmp(char *s1, char *s2, int n);
-int		my_getnbr(char *str);
-void	my_memset(char *str, int c, size_t n);
-void	get_next_line(const int fd);
-void    draw_game(t_display *display, t_data *data);
-void		check_cmd(char *buffer, t_data *data);
-void    my_players(char *buffer, t_data * data);
-void    my_scores(char *buffer, t_data * data);
-void    my_ball(char *buffer, t_data *data);
-void resetBall(SDL_Rect *position,int *x,int *y);
-char	**my_str_to_wordtab(char *str, char sp);
-void resetBall(SDL_Rect *position,int *x,int *y);
+  int		main(int argc, char **argv);
+  int		init_sdl(t_display *display, t_data *data);
+  void	usage();
+  void	*my_client(void *arg);
+  int		client(t_data *data);
+  void	do_client(t_data *data);
+  int		my_socket(int domain, int type, int protocol);
+  int		my_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+  int		my_read(int fd, void *buffer, size_t count);
+  int		check_arg(int argc, char **argv);
+  void	my_putchar(char c);
+  void	my_putstr(char *str);
+  int		my_strlen(char *str);
+  int		my_strcmp(char *s1, char *s2);
+  int		my_strncmp(char *s1, char *s2, int n);
+  int		my_getnbr(char *str);
+  void	my_memset(char *str, int c, size_t n);
+  void	get_next_line(const int fd);
+  void    draw_game(t_display *display, t_data *data);
+  void		check_cmd(char *buffer, t_data *data);
+  void    my_players(char *buffer, t_data * data);
+  void    my_scores(char *buffer, t_data * data);
+  void    my_ball(char *buffer, t_data *data);
+  void resetBall(SDL_Rect *position,int *x,int *y);
+  char	**my_str_to_wordtab(char *str, char sp);
+    void resetBallserv(int *pos_x,int *pos_y,int *x,int *y);
 int   sdl_start(t_display *display, t_data *data); //Lancer le jeu
 int			server(t_data *data);
 

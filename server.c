@@ -20,14 +20,16 @@ void    check_client(char *buffer, t_data *data)
   play = my_str_to_wordtab(buffer, '\n');
   while (play[i] != NULL)
   {
-    if (strncmp(play[i], "UP 1", 5) == 0)
-      puts("le joueur adverse envoie UP");
-    else if (strncmp(play[i], "UP 0", 7) == 0)
-      puts("le joueur adverse envoie UP NOPE");
-    else if (strncmp(play[i], "DOWN 0", 4) == 0)
-      puts("le joueur adverse envoie DOWN");
-    else if (strncmp(play[i], "DOWN 1", 4) == 0)
-      puts("le joueur adverse envoie DOWN");
+    if (strncmp(play[i], "UP 1", 4) == 0)
+    {
+      if(data->yplayer>=5)
+        data->yplayer -=5;
+    }
+    if (strncmp(play[i], "DOWN 1", 6) == 0)
+    {
+      if(data->yplayer<=SCREEN_H -BAR_H -5)
+        data->yplayer +=5;
+    }    
     i++;
   }
   free(play);
@@ -39,13 +41,19 @@ void    connect_client(t_server *server, t_data *data)
  struct sockaddr_in csin;
  size_t size;
  int     cs;
- char    str[512];
+ char    str[512]; //Message envoyé par le client
  int   rread;
 
- char sendc[512];
+ char sendc[512]; //chaine à renvoyer
 
- char scoreP1_s[10];
- char scoreP2_s[10];
+ char scoreP1_s[10]; //score du p1 en char*
+ char scoreP2_s[10]; //score du p2 en char*
+
+
+ char P1_x[10];
+ char P1_y[10];
+ char P2_x[10];
+ char P2_y[10];
 
  char Ball_x_s[10];
  char Ball_y_s[10];
@@ -68,13 +76,49 @@ void    connect_client(t_server *server, t_data *data)
       puts(str);
       memset(sendc, 0, 512);
 
-      data->game = strdup(str);
       check_client(str, data);
 
-      //MOuvement de la balle
+      /* Rebond sur les bords de l'ecran VITESSSSE*/ 
+      if(data->ball_y <=0)
+        data->yBall = BALL_SPEED; //va vers le bas
+      if(data->ball_y >=SCREEN_H)
+        data->yBall = -BALL_SPEED; //va vers le haut
+
+      
 
 
-    /* Mise a jour du score */
+      /* Si victoire d'un joueur */
+      if(data->ball_x <=0)
+      {
+        resetBallserv(&data->ball_x,&data->ball_y,&data->xBall,&data->yBall);
+        data->scorep2++;
+      }
+      if(data->ball_x + BALL_SIZE >SCREEN_W)
+      {
+        resetBallserv(&data->ball_x,&data->ball_y,&data->xBall,&data->yBall);
+        data->scorep1++;
+      }      
+      
+      
+      /* Collision avec la barre de gauche */
+      if(data->ball_x <= data->xplayer+BAR_W && data->ball_x > data->xplayer)
+      {
+
+        if(data->ball_y >= data->yplayer && data->ball_y <= data->yplayer + BAR_H)
+          data->xBall = BALL_SPEED;
+      }
+
+      /* Collision avec la barre de droite */
+      if(data->ball_x >= data->xplayertwo &&  data->ball_x < data->xplayertwo + BAR_W/2)
+      {
+        if(data->ball_y >= data->yplayertwo && data->ball_y <= data->yplayertwo + BAR_H)
+          data->xBall = -BALL_SPEED;
+      }
+
+      data->ball_x += data->xBall;
+      data->ball_y += data->yBall;
+
+/* Mise a jour du score OKAY*/
       sprintf(scoreP1_s,"%d",data->scorep1);
       sprintf(scoreP2_s,"%d",data->scorep2);
 
@@ -82,70 +126,14 @@ void    connect_client(t_server *server, t_data *data)
       strcat(sendc, scoreP1_s);
       strcat(sendc, " ");
       strcat(sendc, scoreP2_s);
+    /* Mise a jour du score */
 
-      // printf("à envoyer = %s\n", sendc);
-
-
-      
-      
-      /* Rebond sur les bords de l'ecran VITESSSSE*/ 
-      // if(display->positionBall.y <=0)
-      //   display->yBall = BALL_SPEED;
-      // if(display->positionBall.y >=SCREEN_H)
-      //   display->yBall = -BALL_SPEED;
-      if(data->ball_y <=0)
-        data->yBall = BALL_SPEED; //va vers le bas
-      if(data->ball_y >=SCREEN_H)
-        data->yBall = -BALL_SPEED; //va ver sle haut
-
-      
-      
-      /* Si victoire d'un joueur */
-      if(data->ball_x <=0)
-      {
-        //resetBall(&display->positionBall,&data->xBall,&data->yBall);
-        data->scorep2++;
-      }
-      if(data->ball_x + BALL_SIZE >SCREEN_W)
-      {
-        //resetBall(&display->positionBall,&data->xBall,&data->yBall);
-        data->scorep1++;
-      }
-      
-      
-      
-      
-      /* Collision avec la barre de gauche */
-      
-      if(data->ball_x <= data->xplayer+BAR_W && data->ball_x > data->xplayer)
-      {
-
-        if(data->ball_y >= data->yplayer && data->ball_y <= data->yplayer + BAR_H)
-          data->xBall = BALL_SPEED;
-
-      }
-      
-      /* Collision avec la barre de droite */
-      if(data->ball_x >= data->xplayertwo &&  data->ball_x < data->xplayertwo + BAR_W/2)
-      {
-
-        if(data->ball_y >= data->yplayertwo && data->ball_y <= data->yplayertwo + BAR_H)
-          data->xBall = -BALL_SPEED;
-
-      }
-
-      data->xBall += data->ball_x;
-      data->yBall += data->ball_y;
-      data->yBall++;
-
-      sprintf(Ball_x_s,"%d",data->xBall);
-      sprintf(Ball_y_s,"%d",data->yBall);
+      sprintf(Ball_x_s,"%d",data->ball_x);
+      sprintf(Ball_y_s,"%d",data->ball_y);
 
       strcat(sendc, "\nBALL ");
-      //strcat(sendc, Ball_x_s);
-      strcat(sendc, "2");
+      strcat(sendc, Ball_x_s);
       strcat(sendc, " ");
-      //strcat(sendc, "9");
       strcat(sendc, Ball_y_s);
 
       printf("à envoyer = %s\n", sendc);
@@ -156,7 +144,7 @@ void    connect_client(t_server *server, t_data *data)
         exit(errno);
       }
 
-      //write ver sle client le tableau avec toutes les infos
+      //write vers le client le tableau avec toutes les infos
       memset(str, 0, 512);
       memset(sendc, 0, 512);
     }
@@ -195,6 +183,8 @@ void     *my_server(void *arg)
 
   data->type = 2;
 
+  //init_data(data);
+
   server = malloc(sizeof(t_server));
   if (server == NULL)
     return (NULL);
@@ -212,7 +202,7 @@ void     *my_server(void *arg)
  return (NULL);
 }
 
-int     server(t_data *data)
+int     server(t_data *data) //OKAY
 {
   pthread_t   print;
   pthread_t   server;

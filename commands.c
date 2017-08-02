@@ -25,7 +25,6 @@ void    my_players(char *buffer, t_data * data)
   char    **tab;
 
   tab = my_str_to_wordtab(buffer, ' ');
-    puts("dans players");
 
   data->xplayer = atoi(tab[1]);
   data->yplayer = atoi(tab[2]);
@@ -36,27 +35,24 @@ void    my_players(char *buffer, t_data * data)
   free(tab);
 }
 
-void    my_scores(char *buffer, t_data * data)
+void    my_scores(char *buffer, t_data * data) //OKAY FONCTION
 {
   char    **tab;
 
   tab = my_str_to_wordtab(buffer, ' ');
-    puts("dans scores");
 
   data->scorep1 = atoi(tab[1]);
   data->scorep2 = atoi(tab[2]);
   free(tab);
 }
 
-void    my_ball(char *buffer, t_data *data)
+void    my_ball(char *buffer, t_data *data) //OKAY FONCTION
 {
   char    **tab;
 
   tab = my_str_to_wordtab(buffer, ' ');
-  puts("dans balls");
   data->ball_x = atoi(tab[1]);
   data->ball_y = atoi(tab[2]);
-    puts("dans balls2");
 
   free(tab);
 }

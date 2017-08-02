@@ -10,7 +10,7 @@
 
 #include "client.h"
 
-int	init_sdl(t_display *display) //FONCTION BONNE
+int	init_sdl(t_display *display, t_data *data) //FONCTION BONNE
 {
   display->ecran = NULL;
   if (SDL_Init(SDL_INIT_VIDEO) == -1)
@@ -42,7 +42,7 @@ int	init_sdl(t_display *display) //FONCTION BONNE
   SDL_FillRect(display->player2,NULL,SDL_MapRGB(display->player2->format,255,255,255));
 
   display->ball = SDL_CreateRGBSurface(SDL_HWSURFACE,BALL_SIZE,BALL_SIZE,32,0,0,0,0);
-  SDL_FillRect(display->ball,NULL,SDL_MapRGB(display->ball->format,255,0,0)); //ON DESSINE LA BALL, OKAY
+  SDL_FillRect(display->ball,NULL,SDL_MapRGB(display->ball->format,255,255,255)); //ON DESSINE LA BALL, OKAY
 
 
   TTF_Init();
@@ -65,14 +65,23 @@ int	init_sdl(t_display *display) //FONCTION BONNE
   display->positionP1.x = 50;
   display->positionP1.y = SCREEN_H/2 - BAR_H/2;
   
+  data->xplayer = display->positionP1.x;
+  data->yplayer = display->positionP1.y;
+
   display->positionP2.x = SCREEN_W - 50 - BAR_W;
   display->positionP2.y = SCREEN_H/2 - BAR_H/2;
-  
+
+  data->xplayertwo = display->positionP2.x;
+  data->yplayertwo = display->positionP2.y;
+
+
   display->xBall = 0;
   display->yBall = 0;
 
   resetBall(&display->positionBall,&display->xBall,&display->yBall);
   
+  data->ball_x = display->positionBall.x;
+
   display->positionLigne.x = SCREEN_W/2 - LINE_W/2;
   display->positionLigne.y = 0;
 
@@ -86,7 +95,7 @@ void    print_ball(t_data *data, t_display *display) //Pour aficcher la ball de 
 {
   display->positionBall.x = data->ball_x;
   display->positionBall.y = data->ball_y;
-  SDL_BlitSurface(display->ball, NULL, display->ecran, &display->positionBall);
+  //SDL_BlitSurface(display->ball, NULL, display->ecran, &display->positionBall);
 }
 
 void    print_players(t_data *data, t_display *display) //Pour aficche rles joueurs de PONG, À MODIFIER!!
@@ -125,7 +134,7 @@ void  wait_event(t_display *display, t_data *data) //ATTENDRE LES ÉVENEMENTS, f
     dprintf(data->socket, "DOWN 1\n");
   if (display->event.type == SDL_KEYUP && display->event.key.keysym.sym == SDLK_DOWN)
     dprintf(data->socket, "DOWN 0\n");
-  SDL_Delay(20);
+  SDL_Delay(10);
 }
 
 void  wait_event_serve(t_display *display, t_data *data) //ATTENDRE LES ÉVENEMENTS, fonction bone, à tester
@@ -160,8 +169,8 @@ int   sdl_start(t_display *display, t_data *data) //Lancer le jeu
   {
     if (data->type == 1)
       wait_event(display, data);
-    if (data->type == 2)
-      wait_event_serve(display, data);
+    // if (data->type == 2)
+    //   wait_event_serve(display, data);
       draw_game(display, data); //affichage des joueurs et de la balle
     }
     SDL_FreeSurface(display->rectangle);
@@ -177,8 +186,7 @@ int   sdl_start(t_display *display, t_data *data) //Lancer le jeu
 
     sprintf(scoreP1_s,"%d",data->scorep1);
     sprintf(scoreP2_s,"%d",data->scorep2);
-    puts ("ALors la : ");
-    puts(scoreP2_s);
+    
     display->score1 = TTF_RenderText_Solid(display->font, scoreP1_s, display->couleur);
     display->score2 = TTF_RenderText_Solid(display->font, scoreP2_s, display->couleur);
 
@@ -188,8 +196,8 @@ int   sdl_start(t_display *display, t_data *data) //Lancer le jeu
     SDL_FillRect(display->ecran,NULL,SDL_MapRGB(display->ecran->format,0,0,0));
     SDL_BlitSurface(display->ligne,NULL,display->ecran,&display->positionLigne);
     
-    SDL_BlitSurface(display->player1,NULL,display->ecran,&display->positionP1);
-    SDL_BlitSurface(display->player2,NULL,display->ecran,&display->positionP2);
+    // SDL_BlitSurface(display->player1,NULL,display->ecran,&display->positionP1);
+    // SDL_BlitSurface(display->player2,NULL,display->ecran,&display->positionP2);
     
     SDL_BlitSurface(display->ball,NULL,display->ecran,&display->positionBall);
 
@@ -200,7 +208,7 @@ int   sdl_start(t_display *display, t_data *data) //Lancer le jeu
 
     (void)data;
 
-    // print_players(data, display);
+    print_players(data, display);
     print_ball(data, display);
     //print_score(data, display);
     
@@ -214,6 +222,14 @@ int   sdl_start(t_display *display, t_data *data) //Lancer le jeu
   {
     position->x  = BALL_X;
     position->y = BALL_Y;
+    *x=BALL_SPEED;
+    *y=BALL_SPEED;
+  }
+
+  void resetBallserv(int *pos_x,int *pos_y,int *x,int *y)
+  {
+    *pos_x  = BALL_X;
+    *pos_y = BALL_Y;
     *x=BALL_SPEED;
     *y=BALL_SPEED;
   }

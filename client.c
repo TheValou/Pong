@@ -24,12 +24,9 @@ void	do_client(t_data *data)
             puts("avant le puts");
 
       puts(str);
-      puts("avant le game");
       data->game = str;
-      puts("après le game");
       check_cmd(str, data);
       memset(str, 0, 512);
-      //free(data->game);
     }
   }
 }
@@ -46,12 +43,9 @@ void      *display(void *arg)
     fprintf(stderr, "Erreur\n");
     exit (1);
   }
-  // pthread_mutex_lock(&mutex);
-  // pthread_cond_wait(&condition, &mutex);
-  // pthread_mutex_unlock(&mutex);
   data = (t_data *)arg;
 
-  if (init_sdl(display) == 1)
+  if (init_sdl(display, data) == 1)
     return (NULL);
   else
     sdl_start(display, data);
