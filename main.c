@@ -25,7 +25,7 @@ int	check_arg(int argc, char **argv)
  if (atoi(argv[5]) < 0)
    return (1);
  return (3);
-}  
+}
 return (1);
 }
 
@@ -41,7 +41,7 @@ int		main(int argc,char **argv)
 {
   t_data	*data;
   int		choice;
-  
+
   if ((data = malloc(sizeof(t_data))) == NULL)
     return (-1);
   choice = check_arg(argc, argv);

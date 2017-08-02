@@ -24,8 +24,7 @@ char	**my_str_to_wordtab(char *str, char sp)
     return (NULL);
   i = 0;
   j = 0;
-  while (str[i] != '\0')
-  {
+  while (str[i] != '\0') {
     x = 0;
     while (str[i] != '\0' && (str[i] == sp || str[i] == ' ' || str[i] == '\t'))
       i++;
@@ -33,8 +32,7 @@ char	**my_str_to_wordtab(char *str, char sp)
       return (NULL);
     if (str[i] == '\0')
       return (tab);
-    while (str[i] != '\0' && str[i] != sp)
-    {
+    while (str[i] != '\0' && str[i] != sp) {
      tab[j][x] = str[i];
      x++;
      i++;
@@ -58,13 +56,11 @@ char	**my_str_to_map(char *map, t_data *data)
     return (NULL);
   i = 0;
   j = 0;
-  while (map[i])
-  {
+  while (map[i]) {
     x = 0;
     if ((tab[j] = malloc(data->width + 1)) == NULL)
       return (NULL);
-    while (map[i] && x < data->width)
-    {
+    while (map[i] && x < data->width) {
      tab[j][x] = map[i];
      x++;
      i++;

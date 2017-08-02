@@ -20,9 +20,9 @@ void		check_cmd(char *buffer, t_data *data)
  free(play);
 }
 
-void    my_players(char *buffer, t_data * data)
+void	my_players(char *buffer, t_data * data)
 {
-  char    **tab;
+  char	**tab;
 
   tab = my_str_to_wordtab(buffer, ' ');
 
@@ -35,9 +35,9 @@ void    my_players(char *buffer, t_data * data)
   free(tab);
 }
 
-void    my_scores(char *buffer, t_data * data) //OKAY FONCTION
+void	my_scores(char *buffer, t_data * data)
 {
-  char    **tab;
+  char	**tab;
 
   tab = my_str_to_wordtab(buffer, ' ');
 
@@ -46,9 +46,9 @@ void    my_scores(char *buffer, t_data * data) //OKAY FONCTION
   free(tab);
 }
 
-void    my_ball(char *buffer, t_data *data) //OKAY FONCTION
+void	my_ball(char *buffer, t_data *data)
 {
-  char    **tab;
+  char	**tab;
 
   tab = my_str_to_wordtab(buffer, ' ');
   data->ball_x = atoi(tab[1]);
@@ -56,4 +56,3 @@ void    my_ball(char *buffer, t_data *data) //OKAY FONCTION
 
   free(tab);
 }
-

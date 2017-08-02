@@ -1,19 +1,19 @@
 /*
 ** server.c for soft war in /home/wurfl_v/Soft War/Serveur
-** 
+**
 ** Made by WURFL Valentin
 ** Login   <wurfl_v@etna-alternance.net>
-** 
+**
 ** Started on  Wed Jul  6 09:59:13 2016 WURFL Valentin
 ** Last update Sat Jul 29 15:55:30 2017 WURFL Valentin
 */
 
 #include "client.h"
 
-void    check_client(char *buffer, t_data *data)
+void	check_client(char *buffer, t_data *data)
 {
-  char    **play;
-  int   i;
+  char	**play;
+  int	i;
 
   (void)data;
   i = 0;
@@ -29,34 +29,29 @@ void    check_client(char *buffer, t_data *data)
     {
       if(data->yplayer<=SCREEN_H -BAR_H -5)
         data->yplayer +=5;
-    }    
+    }
     i++;
   }
   free(play);
 }
 
 
-void    connect_client(t_server *server, t_data *data)
+void	connect_client(t_server *server, t_data *data)
 {
  struct sockaddr_in csin;
  size_t size;
- int     cs;
- char    str[512]; //Message envoyé par le client
- int   rread;
-
- char sendc[512]; //chaine à renvoyer
-
- char scoreP1_s[10]; //score du p1 en char*
- char scoreP2_s[10]; //score du p2 en char*
-
-
- char P1_x[10];
- char P1_y[10];
- char P2_x[10];
- char P2_y[10];
-
- char Ball_x_s[10];
- char Ball_y_s[10];
+ int	cs;
+ char	str[512]; /* Message envoyé par le client */
+ int	rread;
+ char	sendc[512]; /* chaine à renvoyer */
+ char	scoreP1_s[10]; /* score du p1 en char* */
+ char	scoreP2_s[10]; /* score du p2 en char* */
+ char	P1_x[10];
+ char	P1_y[10];
+ char	P2_x[10];
+ char	P2_y[10];
+ char	Ball_x_s[10];
+ char	Ball_y_s[10];
 
  size = sizeof(csin);
  cs = accept(server->fd_socket, (struct sockaddr *)&csin, (socklen_t *)&size);
@@ -64,28 +59,23 @@ void    connect_client(t_server *server, t_data *data)
  {
    while (42)
    {
-    if ((rread = recv(cs, str, 510, 0)) < 0)
-    {
+    if ((rread = recv(cs, str, 510, 0)) < 0) {
       perror("recv()");
       exit(errno);
     }
     str[rread] = '\0';
 
-    if (strlen(str) <= 250)
-    {
+    if (strlen(str) <= 250) {
       puts(str);
       memset(sendc, 0, 512);
 
       check_client(str, data);
 
-      /* Rebond sur les bords de l'ecran VITESSSSE*/ 
+      /* Rebond sur les bords de l'ecran VITESSSSE*/
       if(data->ball_y <=0)
-        data->yBall = BALL_SPEED; //va vers le bas
+        data->yBall = BALL_SPEED; /* va vers le bas */
       if(data->ball_y >=SCREEN_H)
-        data->yBall = -BALL_SPEED; //va vers le haut
-
-      
-
+        data->yBall = -BALL_SPEED; /* va vers le haut */
 
       /* Si victoire d'un joueur */
       if(data->ball_x <=0)
@@ -97,9 +87,7 @@ void    connect_client(t_server *server, t_data *data)
       {
         resetBallserv(&data->ball_x,&data->ball_y,&data->xBall,&data->yBall);
         data->scorep1++;
-      }      
-      
-      
+      }
       /* Collision avec la barre de gauche */
       if(data->ball_x <= data->xplayer+BAR_W && data->ball_x > data->xplayer)
       {
@@ -107,18 +95,15 @@ void    connect_client(t_server *server, t_data *data)
         if(data->ball_y >= data->yplayer && data->ball_y <= data->yplayer + BAR_H)
           data->xBall = BALL_SPEED;
       }
-
       /* Collision avec la barre de droite */
       if(data->ball_x >= data->xplayertwo &&  data->ball_x < data->xplayertwo + BAR_W/2)
       {
         if(data->ball_y >= data->yplayertwo && data->ball_y <= data->yplayertwo + BAR_H)
           data->xBall = -BALL_SPEED;
       }
-
       data->ball_x += data->xBall;
       data->ball_y += data->yBall;
-
-/* Mise a jour du score OKAY*/
+      /* Mise a jour du score OKAY*/
       sprintf(scoreP1_s,"%d",data->scorep1);
       sprintf(scoreP2_s,"%d",data->scorep2);
 
@@ -126,7 +111,7 @@ void    connect_client(t_server *server, t_data *data)
       strcat(sendc, scoreP1_s);
       strcat(sendc, " ");
       strcat(sendc, scoreP2_s);
-    /* Mise a jour du score */
+      /* Mise a jour du score */
 
       sprintf(Ball_x_s,"%d",data->ball_x);
       sprintf(Ball_y_s,"%d",data->ball_y);
@@ -135,16 +120,12 @@ void    connect_client(t_server *server, t_data *data)
       strcat(sendc, Ball_x_s);
       strcat(sendc, " ");
       strcat(sendc, Ball_y_s);
-
       printf("à envoyer = %s\n", sendc);
-
-      if(send(cs, sendc, strlen(sendc), 0) < 0)
-      {
+      if(send(cs, sendc, strlen(sendc), 0) < 0) {
         perror("send()");
         exit(errno);
       }
-
-      //write vers le client le tableau avec toutes les infos
+      /* write vers le client le tableau avec toutes les infos */
       memset(str, 0, 512);
       memset(sendc, 0, 512);
     }
@@ -168,11 +149,12 @@ int   init_connection(t_server *server, int port)
   return (-1);
 }
 
-void     *my_server(void *arg)
+void		*my_server(void *arg)
 {
-  t_server    *server;
-  int     port;
-  t_data    *data;
+  t_server	*server;
+  int		port;
+  t_data	*data;
+
   data = malloc(sizeof(t_data));
   if (data == NULL)
   {
@@ -180,11 +162,8 @@ void     *my_server(void *arg)
     exit (1);
   }
   data = (t_data *)arg;
-
   data->type = 2;
-
-  //init_data(data);
-
+  /* init_data(data); */
   server = malloc(sizeof(t_server));
   if (server == NULL)
     return (NULL);
@@ -202,10 +181,10 @@ void     *my_server(void *arg)
  return (NULL);
 }
 
-int     server(t_data *data) //OKAY
+int		server(t_data *data)
 {
-  pthread_t   print;
-  pthread_t   server;
+  pthread_t	print;
+  pthread_t	server;
 
   pthread_create(&server, NULL, &my_server, data);
   pthread_create(&print, NULL, display, data);
@@ -214,6 +193,3 @@ int     server(t_data *data) //OKAY
   pthread_join(print, NULL);
   return (0);
 }
-
-
-

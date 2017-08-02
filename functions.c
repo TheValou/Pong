@@ -1,9 +1,9 @@
 /*
 ** functions.c for soft war in /home/wurfl_v/Soft War/Client
-** 
+**
 ** Made by WURFL Valentin
 ** Login   <wurfl_v@etna-alternance.net>
-** 
+**
 ** Started on  Wed Jul  6 09:56:13 2016 WURFL Valentin
 ** Last update Wed Jul  6 09:56:14 2016 WURFL Valentin
 */

@@ -1,9 +1,9 @@
 /*
 ** my_errors.c for soft war in /home/wurfl_v/Soft War/Client
-** 
+**
 ** Made by WURFL Valentin
 ** Login   <wurfl_v@etna-alternance.net>
-** 
+**
 ** Started on  Wed Jul  6 09:56:52 2016 WURFL Valentin
 ** Last update Sat Jul 29 16:00:39 2017 WURFL Valentin
 */
@@ -36,7 +36,6 @@ int	my_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
       write(2, "Error with connect\n", strlen("Error with connect\n"));
       perror("");
       close(sockfd);
-
     }
   return (ret);
 }

@@ -1,9 +1,9 @@
 ##
 ## Makefile for soft war in /home/wurfl_v/Soft War/Client
-## 
+##
 ## Made by WURFL Valentin
 ## Login   <wurfl_v@etna-alternance.net>
-## 
+##
 ## Started on  Wed Jul  6 09:56:29 2016 WURFL Valentin
 ## Last update Sun Jul 30 18:38:20 2017 WURFL Valentin
 ##
