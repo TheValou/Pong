@@ -90,11 +90,11 @@ void    print_ball(t_data *data, t_display *display)
 {
   display->positionBall.x = data->ball_x;
   display->positionBall.y = data->ball_y;
+  SDL_BlitSurface(display->ball,NULL,display->ecran,&display->positionBall);
 }
 
 void    print_players(t_data *data, t_display *display) /* Pour afficher les joueurs de PONG, À MODIFIER!! */
 {
-
   display->positionP1.x = data->xplayer;
   display->positionP1.y = data->yplayer;
   SDL_FillRect(display->player1, NULL, SDL_MapRGB(display->ecran->format, 240, 5, 0));
@@ -104,7 +104,6 @@ void    print_players(t_data *data, t_display *display) /* Pour afficher les jou
   display->positionP2.y = data->yplayertwo;
   SDL_FillRect(display->player2, NULL, SDL_MapRGB(display->ecran->format, 240, 5, 0));
   SDL_BlitSurface(display->player2, NULL, display->ecran, &display->positionP2);
-
 }
 
 void	wait_event(t_display *display, t_data *data) /* ATTENDRE LES ÉVENEMENTS, fonction bonne, à tester */
@@ -115,17 +114,20 @@ void	wait_event(t_display *display, t_data *data) /* ATTENDRE LES ÉVENEMENTS, f
     SDL_Quit();
     exit(0);
   }
-  if (display->event.type == SDL_KEYDOWN && display->event.key.keysym.sym == SDLK_ESCAPE)
+  else if (display->event.type == SDL_KEYDOWN && display->event.key.keysym.sym == SDLK_ESCAPE)
   {
     SDL_Quit();
     exit(0);
   }
-  if (display->event.type == SDL_KEYDOWN && display->event.key.keysym.sym == SDLK_UP)
+  else if (display->event.type == SDL_KEYDOWN && display->event.key.keysym.sym == SDLK_UP) {
     dprintf(data->socket, "UP 1\n");
-  if (display->event.type == SDL_KEYDOWN && display->event.key.keysym.sym == SDLK_DOWN)
+  }
+  else if (display->event.type == SDL_KEYDOWN && display->event.key.keysym.sym == SDLK_DOWN) {
     dprintf(data->socket, "DOWN 1\n");
-  else
+  }
+  else {
     dprintf(data->socket, "PLOP");
+  }
   SDL_Delay(20);
 }
 
@@ -150,7 +152,7 @@ void	wait_event_serve(t_display *display, t_data *data) /* ATTENDRE LES ÉVENEME
   else if (display->event.type == SDL_KEYDOWN && display->event.key.keysym.sym == SDLK_DOWN)
   {
     if(data->yplayertwo<=SCREEN_H -BAR_H -5)
-      data->yplayertwo +=5; 
+      data->yplayertwo +=5;
   }
   else
   {
@@ -166,7 +168,7 @@ int	sdl_start(t_display *display, t_data *data) /* Lancer le jeu */
   while (continuer)
   {
     if (data->type == 1)
-      wait_event(display, data); 
+      wait_event(display, data);
     if (data->type == 2)
       wait_event_serve(display, data);
       draw_game(display, data); /* affichage des joueurs et de la balle */
@@ -191,7 +193,6 @@ int	sdl_start(t_display *display, t_data *data) /* Lancer le jeu */
   SDL_BlitSurface(display->ligne,NULL,display->ecran,&display->positionLigne);
 
   print_ball(data, display);
-  SDL_BlitSurface(display->ball,NULL,display->ecran,&display->positionBall);
   /* printf("Les positions de la ball à l'affichage (positionBall) : %d et %d\n", display->positionBall.x, display->positionBall.y); */
   SDL_BlitSurface(display->score1,NULL,display->ecran,&display->positionScore1);
   SDL_BlitSurface(display->score2,NULL,display->ecran,&display->positionScore2);
