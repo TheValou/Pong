@@ -79,7 +79,7 @@ int	init_sdl(t_display *display, t_data *data)
 
   data->ball_x = display->positionBall.x;
   data->ball_y = display->positionBall.y;
-  // printf ("Initialisation avec resetBall, positionBall.x = %d, positionall.y = %d, xBall = %d, et yBall = %d\n", display->positionBall.x, display->positionBall.y,data->xBall,data->yBall);
+  /* printf ("Initialisation avec resetBall, positionBall.x = %d, positionall.y = %d, xBall = %d, et yBall = %d\n", display->positionBall.x, display->positionBall.y,data->xBall,data->yBall); */
 
   display->positionLigne.x = SCREEN_W/2 - LINE_W/2;
   display->positionLigne.y = 0;
@@ -192,7 +192,7 @@ int	sdl_start(t_display *display, t_data *data) /* Lancer le jeu */
 
   print_ball(data, display);
   SDL_BlitSurface(display->ball,NULL,display->ecran,&display->positionBall);
-  // printf("Les positions de la ball à l'affichage (positionBall) : %d et %d\n", display->positionBall.x, display->positionBall.y);
+  /* printf("Les positions de la ball à l'affichage (positionBall) : %d et %d\n", display->positionBall.x, display->positionBall.y); */
   SDL_BlitSurface(display->score1,NULL,display->ecran,&display->positionScore1);
   SDL_BlitSurface(display->score2,NULL,display->ecran,&display->positionScore2);
 
