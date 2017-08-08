@@ -23,8 +23,6 @@ void	do_client(t_data *data)
 
     if (strlen(str) <= 250)
     {
-      puts("avant le puts");
-
       puts(str);
       data->game = str;
       check_cmd(str, data);
