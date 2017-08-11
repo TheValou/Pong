@@ -79,7 +79,6 @@ int	init_sdl(t_display *display, t_data *data)
 
   data->ball_x = display->positionBall.x;
   data->ball_y = display->positionBall.y;
-  /* printf ("Initialisation avec resetBall, positionBall.x = %d, positionall.y = %d, xBall = %d, et yBall = %d\n", display->positionBall.x, display->positionBall.y,data->xBall,data->yBall); */
 
   display->positionLigne.x = SCREEN_W/2 - LINE_W/2;
   display->positionLigne.y = 0;
@@ -93,7 +92,7 @@ void    print_ball(t_data *data, t_display *display)
   SDL_BlitSurface(display->ball,NULL,display->ecran,&display->positionBall);
 }
 
-void    print_players(t_data *data, t_display *display) /* Pour afficher les joueurs de PONG, À MODIFIER!! */
+void    print_players(t_data *data, t_display *display)
 {
   display->positionP1.x = data->xplayer;
   display->positionP1.y = data->yplayer;
@@ -106,7 +105,7 @@ void    print_players(t_data *data, t_display *display) /* Pour afficher les jou
   SDL_BlitSurface(display->player2, NULL, display->ecran, &display->positionP2);
 }
 
-void	wait_event(t_display *display, t_data *data) /* ATTENDRE LES ÉVENEMENTS, fonction bonne, à tester */
+void	wait_event(t_display *display, t_data *data)
 {
   SDL_PollEvent(&display->event);
   if (display->event.type == SDL_QUIT)
@@ -131,7 +130,7 @@ void	wait_event(t_display *display, t_data *data) /* ATTENDRE LES ÉVENEMENTS, f
   SDL_Delay(20);
 }
 
-void	wait_event_serve(t_display *display, t_data *data) /* ATTENDRE LES ÉVENEMENTS, fonction bonne, à tester */
+void	wait_event_serve(t_display *display, t_data *data)
 {
   SDL_PollEvent(&display->event);
   if (display->event.type == SDL_QUIT)
@@ -163,8 +162,9 @@ void	wait_event_serve(t_display *display, t_data *data) /* ATTENDRE LES ÉVENEME
 
 int	sdl_start(t_display *display, t_data *data) /* Lancer le jeu */
 {
-  int   continuer = 1;
+  int   continuer;
 
+  continuer = 1;
   while (continuer)
   {
     if (data->type == 1)
@@ -177,11 +177,11 @@ int	sdl_start(t_display *display, t_data *data) /* Lancer le jeu */
   return (0);
 }
 
-  void		draw_game(t_display *display, t_data *data) /* pour afficher le jeu, à modifier */
+  void		draw_game(t_display *display, t_data *data) /* pour afficher le jeu */
 {
 
-  char	scoreP1_s[10];
-  char	scoreP2_s[10];
+  char		scoreP1_s[10];
+  char		scoreP2_s[10];
 
   sprintf(scoreP1_s,"%d",data->scorep1);
   sprintf(scoreP2_s,"%d",data->scorep2);
@@ -193,7 +193,6 @@ int	sdl_start(t_display *display, t_data *data) /* Lancer le jeu */
   SDL_BlitSurface(display->ligne,NULL,display->ecran,&display->positionLigne);
 
   print_ball(data, display);
-  /* printf("Les positions de la ball à l'affichage (positionBall) : %d et %d\n", display->positionBall.x, display->positionBall.y); */
   SDL_BlitSurface(display->score1,NULL,display->ecran,&display->positionScore1);
   SDL_BlitSurface(display->score2,NULL,display->ecran,&display->positionScore2);
 

@@ -71,7 +71,7 @@ void	connect_client(t_server *server, t_data *data)
 
     memset(sendc, 0, 512);
 
-      /* Rebond sur les bords de l'ecran VITESSSSE*/
+      /* Rebond sur les bords de l'ecran*/
     if(data->ball_y <=0)
      data->yBall = BALL_SPEED; /* va vers le bas */
       if(data->ball_y >=SCREEN_H)
@@ -104,7 +104,7 @@ void	connect_client(t_server *server, t_data *data)
         }
         data->ball_x += data->xBall;
         data->ball_y += data->yBall;
-      /* Mise a jour du score OKAY*/
+      /* Mise a jour du score */
         sprintf(scoreP1_s,"%d",data->scorep1);
         sprintf(scoreP2_s,"%d",data->scorep2);
 

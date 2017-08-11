@@ -53,8 +53,8 @@ typedef struct			s_data
 	char 			*game; /* contient le message */
 	int			height; /* hauteur de la fenêtre */
 	int			width; /* largeur de la fenêtre */
-	int			scorep1; /* score du joeur 1 en int */
-	int			scorep2; /* score du joeur 2 en int */
+	int			scorep1; /* score du joueur 1 en int */
+	int			scorep2; /* score du joueur 2 en int */
 	int 			ball_x; /* position x de la ball */
 	int 			ball_y; /* position y de la ball */
 	int 			xBall; /* vitesse */
@@ -79,25 +79,25 @@ typedef	struct		s_display
 
 	Uint8		*keystates;
 
-	SDL_Rect		positionP1; /* Position du player 1 */
-	SDL_Rect		positionP2; /* position du player2 */
-    	SDL_Rect		positionBall;
-    	SDL_Rect		positionLigne; /* FIXE */
-    	SDL_Rect		positionScore1; /* FIXE */
-    	SDL_Rect		positionScore2; /* FIXE */
-    	SDL_Event		event;
+	SDL_Rect	positionP1; /* Position du player 1 */
+	SDL_Rect	positionP2; /* position du player2 */
+    	SDL_Rect	positionBall;
+    	SDL_Rect	positionLigne; /* FIXE */
+    	SDL_Rect	positionScore1; /* FIXE */
+    	SDL_Rect	positionScore2; /* FIXE */
+    	SDL_Event	event;
 
-    	int 			xBall; /* vitesse */
-    	int 			yBall; /* viteesse */
+    	int 		xBall; /* vitesse */
+    	int 		yBall; /* vitesse */
 
-    	TTF_Font 		*font;
-    	SDL_Color 		couleur;
-    	SDL_Surface 		*score1;
-    	SDL_Surface 		*score2;
+    	TTF_Font 	*font;
+    	SDL_Color 	couleur;
+    	SDL_Surface 	*score1;
+    	SDL_Surface 	*score2;
 
-    	int			width;
-    	int			height;
-  }				t_display;
+    	int		width;
+    	int		height;
+  }			t_display;
 
 
 /* PARTIE SERVEUR */
@@ -132,8 +132,7 @@ typedef	struct		s_display
   char	*my_strcat(char *str1, char *str2);
   char	*my_char_nbr(int nb);
   int   server(t_data *data);
-
-  void      *display(void *arg);
+  void	*display(void *arg);
   /* PARTIE SERVEUR */
   int	main(int argc, char **argv);
   int	init_sdl(t_display *display, t_data *data);
